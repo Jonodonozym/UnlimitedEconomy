@@ -1,0 +1,38 @@
+main: com.jonodonozym.UPEconomy.UPEconomyAPI
+name: UPEconomy
+version: 1.1
+author: Jonodonozym
+description: An economy plugin with a max balance of 1e308, optimized for performance!
+
+commands:
+  balance:
+    description: displays your current balance
+    aliases: [bal]
+    usage: |
+      /bal - displays your current balance
+      /bal [player] - displays the balance of another player
+  balancetop:
+    description: displays the richest players on the server
+    aliases: [baltop]
+    usage: |
+      /baltop
+      /baltop [page]
+  pay:
+    description: sends a specified amount to another player
+    usage: /pay [player] [amount]
+  ueco:
+    descrption: Admin commands for UEconomy
+    aliases: [ue, ueconomy]
+    permission: UEconomy.ueco
+    permission-message: You do not have the UEconomy.ueco permission
+    usage: |
+      /ueco set [player] [amount] - sets a player's balance to the specified amount
+      /ueco add [player] [amount] - adds money to a player's account
+      /ueco subtract [player] [amount] - remove money from a player's account
+      /ueco updatebaltop - forces the baltop scoreboard to update
+    
+permissions:
+  UEconomy.ueco:
+    description: Gives access to all ueco commands
+    default: op
+    
