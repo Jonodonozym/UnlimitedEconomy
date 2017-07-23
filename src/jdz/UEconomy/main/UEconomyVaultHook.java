@@ -9,8 +9,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 public class UEconomyVaultHook extends AbstractEconomy{
 	public static BigDecimal limit = new BigDecimal(10000000000000.0);
 	
-
-
 	@Override
 	public boolean isEnabled() {
 		return true;

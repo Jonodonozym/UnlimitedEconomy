@@ -6,22 +6,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import com.google.common.io.Files;
-
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
 
 public class UEconomyAPI extends JavaPlugin{
 	PluginDescriptionFile pdfile = getDescription();
@@ -204,9 +196,9 @@ public class UEconomyAPI extends JavaPlugin{
 		}
 		
 		Calendar now = Calendar.getInstance();
-		int timeDifference = 100;
+		int timeDifference = Integer.MAX_VALUE;
 		if (lastUpdate != null)
-			timeDifference = lastUpdate.HOUR == now.HOUR ? now.MINUTE - lastUpdate.MINUTE: (lastUpdate.HOUR-now.HOUR)*60 - lastUpdate.MINUTE + now.MINUTE;
+			timeDifference = (int)((now.getTimeInMillis() - lastUpdate.getTimeInMillis()) / 60000);
 		if (timeDifference > BALTOP_UPDATE_DELAY){
 			forceBaltopUpdate();
 			return true;
@@ -216,24 +208,29 @@ public class UEconomyAPI extends JavaPlugin{
 	}
 	
 	static void forceBaltopUpdate(){
-		baltop = new ArrayList<String>(economy.keySet());
-		baltopValues = new ArrayList<Double>();
-		
-		baltop.sort(new Comparator<String>(){
-			@Override
-			public int compare(String p1, String p2) {
-				return (economy.get(p2).compareTo(economy.get(p1)));
-			}
-		});
-		
-		for (String s: baltop)
-			baltopValues.add(economy.get(s));
+		new Thread(){
+			public void run(){
+				setPriority(MIN_PRIORITY);
+				baltop = new ArrayList<String>(economy.keySet());
+				baltopValues = new ArrayList<Double>();
+				
+				baltop.sort(new Comparator<String>(){
+					@Override
+					public int compare(String p1, String p2) {
+						return (economy.get(p2).compareTo(economy.get(p1)));
+					}
+				});
+				
+				for (String s: baltop)
+					baltopValues.add(economy.get(s));
 
-		serverTotal = 0;
-		for (double d: economy.values())
-			serverTotal += d;
-		
-		lastUpdate = Calendar.getInstance();
+				serverTotal = 0;
+				for (double d: economy.values())
+					serverTotal += d;
+				
+				lastUpdate = Calendar.getInstance();
+			}
+		}.run();
 	}
 	
 	private void purgeOldBalances(int days){

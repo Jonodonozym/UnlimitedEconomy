@@ -8,8 +8,6 @@ import org.bukkit.entity.Player;
 
 import net.md_5.bungee.api.ChatColor;
 
-import java.math.BigDecimal;
-
 //@SuppressWarnings("deprecation")
 public class UEconomyCommands implements CommandExecutor {
 		private final UEconomyAPI plugin;
@@ -23,7 +21,7 @@ public class UEconomyCommands implements CommandExecutor {
 			//commands for both			
 			switch(command.getName().toLowerCase()){
 			
-			case "balancetop":
+			case "balancetop":				
 				UEconomyAPI.updateBaltop();
 				
 				int page = 1;
