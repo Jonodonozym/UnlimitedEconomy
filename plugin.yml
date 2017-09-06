@@ -1,5 +1,5 @@
-main: com.jonodonozym.UPEconomy.UPEconomyAPI
-name: UPEconomy
+main: com.jonodonozym.UEconomy.UEconomyAPI
+name: UEconomy
 version: 1.1
 author: Jonodonozym
 description: An economy plugin with a max balance of 1e308, optimized for performance!
