@@ -9,11 +9,15 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.io.Files;
+
+import net.milkbowl.vault.economy.Economy;
 
 public class UEconomyAPI extends JavaPlugin{
 	PluginDescriptionFile pdfile = getDescription();
@@ -50,6 +54,9 @@ public class UEconomyAPI extends JavaPlugin{
 		this.getCommand("ueco").setExecutor(uec);
 		
 		getServer().getPluginManager().registerEvents(new UEconomyJoinEvent(), this);
+		
+		if (getServer().getPluginManager().getPlugin("Vault") != null)
+			Bukkit.getServer().getServicesManager().register(Economy.class, new UEconomyVaultHook(), this, ServicePriority.High);
 	}
 	
 	@Override
@@ -67,15 +74,6 @@ public class UEconomyAPI extends JavaPlugin{
 	public static double getBalance(String player) {
 		if (!economy.containsKey(player)) return 0;
 		return economy.get(player);
-	}
-	
-	public static void createAccount(String player){
-		if (!hasPlayer(player))
-			economy.put(player, 0.0);
-	}
-	
-	public static void createAccount(OfflinePlayer player){
-		createAccount(player.getName());
 	}
 	
 	/**
@@ -209,6 +207,7 @@ public class UEconomyAPI extends JavaPlugin{
 	
 	static void forceBaltopUpdate(){
 		new Thread(){
+			@Override
 			public void run(){
 				setPriority(MIN_PRIORITY);
 				baltop = new ArrayList<String>(economy.keySet());
@@ -233,9 +232,10 @@ public class UEconomyAPI extends JavaPlugin{
 		}.run();
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void purgeOldBalances(int days){
 		if (days <= 0) return;
-		long milis = (long)days * 86400000L;
+		long milis = days * 86400000L;
 		Set<String> toRemove = new HashSet<String>();
 		for (String p: economy.keySet()){
 			if (getServer().getOfflinePlayer(p).getLastPlayed() > milis)
@@ -333,19 +333,23 @@ public class UEconomyAPI extends JavaPlugin{
 	
 
 	public static String charFormat(double value, int significantFigures){
-		return charFormat(value, 3, significantFigures);
+		return charFormat(value, significantFigures, 3, false);
+	}
+	
+	public static String charFormat(double value, int significantFigures, boolean isWholeNumber){
+		return charFormat(value, significantFigures, 3, isWholeNumber);
 	}
 	
 	/**
-	 * Helper method to format BigDecimals using character notation instead of scientific. Goes up to 100Dc (1E+35)
+	 * Helper method to format doubles using character notation instead of scientific. Goes up to 100Dc (1E+35)
 	 * @param value
 	 * @param minimumRadix Any numbers with a radix (1*10^radix) above this will be in scientific notation
 	 * @param significant figures The number of significant figures in the number. Suggested is at least 4
 	 * @return	A string of the number
 	 */
-	public static String charFormat(double val, int minRadix, int significantFigures){
+	public static String charFormat(double val, int significantFigures, int minRadix, boolean isWholeNumber){
 
-        if (val <= 0) return "0.00";
+        if (val <= 0) return "0";
         
         significantFigures = significantFigures < 1? 1: significantFigures;
 		String s = String.format("%"+significantFigures+"."+(significantFigures-1)+"e", val);
@@ -356,8 +360,11 @@ public class UEconomyAPI extends JavaPlugin{
 		int radix = Integer.parseInt(args[1]);
 		while (radix % 3 != 0){ radix--; dp++; }
 		
-		if (radix < minRadix)
-			return String.format("%.2f", val);
+		if (radix < minRadix){
+			if (!isWholeNumber || val%1.0 != 0)
+				return String.format("%.2f", val);
+			return (int)val+"";
+		}
 
 		args[0] = args[0].replace(".", "");
 		if (dp < significantFigures){
@@ -377,12 +384,14 @@ public class UEconomyAPI extends JavaPlugin{
 	public static String charToEngr(String string){
 		String suffix = "";
 		int len = 0;
+		if (string.length() > 1)
 		switch(string.substring(string.length()-1).toLowerCase()){
 			case "k": suffix = "e+3"; len = 1; break;
 			case "m": suffix = "e+6"; len = 1; break;
 			case "b": suffix = "e+9"; len = 1; break;
 			case "t": suffix = "e+12"; len = 1; break;
 		}
+		if (string.length() > 2)
 		switch (string.substring(string.length()-2).toLowerCase()){
 			case "qa": suffix = "e+15"; len = 2; break;
 			case "qi": suffix = "e+18"; len = 2; break;

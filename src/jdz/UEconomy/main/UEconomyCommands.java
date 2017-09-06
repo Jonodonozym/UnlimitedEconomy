@@ -9,13 +9,14 @@ import org.bukkit.entity.Player;
 import net.md_5.bungee.api.ChatColor;
 
 //@SuppressWarnings("deprecation")
-public class UEconomyCommands implements CommandExecutor {
+class UEconomyCommands implements CommandExecutor {
 		private final UEconomyAPI plugin;
 
 		public UEconomyCommands(UEconomyAPI plugin) {
-			this.plugin = plugin; // Store the plug-in in situations where you need it.
+			this.plugin = plugin;
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 			//commands for both			
@@ -56,6 +57,10 @@ public class UEconomyCommands implements CommandExecutor {
 				break;
 
 			case "ueco":
+				if (!sender.hasPermission("UEconomy.ueco")){
+					sender.sendMessage(ChatColor.RED+"You don't have permission to use that command");
+					return true;
+				}
 				if (args.length == 0)
 					return false;
 				else switch (args[0].toLowerCase()) {
@@ -102,6 +107,10 @@ public class UEconomyCommands implements CommandExecutor {
 				break;
 
 			case "balance":
+				if (!sender.hasPermission("UEconomy.baltop")){
+					sender.sendMessage(ChatColor.RED+"You don't have permission to use that command");
+					return true;
+				}
 				if (args.length == 0){
 					if (sender instanceof Player){
 						Player player = (Player) sender;
@@ -121,6 +130,10 @@ public class UEconomyCommands implements CommandExecutor {
 				break;
 
 			case "pay":
+				if (!sender.hasPermission("UEconomy.pay")){
+					sender.sendMessage(ChatColor.RED+"You don't have permission to use that command");
+					return true;
+				}
 				if (sender instanceof Player){
 					if (args.length > 1) {
 						Player player = (Player) sender;

@@ -3,6 +3,7 @@ name: UPEconomy
 version: 1.1
 author: Jonodonozym
 description: An economy plugin with a max balance of 1e308, optimized for performance!
+softdepend: [Vault]
 
 commands:
   about:

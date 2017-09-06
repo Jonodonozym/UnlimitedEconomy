@@ -1,13 +1,11 @@
 package jdz.UEconomy.main;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
-public class UEconomyVaultHook extends AbstractEconomy{
-	public static BigDecimal limit = new BigDecimal(10000000000000.0);
+class UEconomyVaultHook extends AbstractEconomy{
 	
 	@Override
 	public boolean isEnabled() {
