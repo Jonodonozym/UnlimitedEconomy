@@ -57,7 +57,7 @@ class UEconomyCommands implements CommandExecutor {
 				break;
 
 			case "ueco":
-				if (!sender.hasPermission("UEconomy.ueco")){
+				if (!sender.hasPermission("ueconomy.ueco")){
 					sender.sendMessage(ChatColor.RED+"You don't have permission to use that command");
 					return true;
 				}
@@ -107,7 +107,7 @@ class UEconomyCommands implements CommandExecutor {
 				break;
 
 			case "balance":
-				if (!sender.hasPermission("UEconomy.baltop")){
+				if (!sender.hasPermission("ueconomy.baltop")){
 					sender.sendMessage(ChatColor.RED+"You don't have permission to use that command");
 					return true;
 				}
@@ -130,7 +130,7 @@ class UEconomyCommands implements CommandExecutor {
 				break;
 
 			case "pay":
-				if (!sender.hasPermission("UEconomy.pay")){
+				if (!sender.hasPermission("ueconomy.pay")){
 					sender.sendMessage(ChatColor.RED+"You don't have permission to use that command");
 					return true;
 				}
