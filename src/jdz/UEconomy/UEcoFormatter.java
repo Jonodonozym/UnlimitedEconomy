@@ -7,7 +7,7 @@ public class UEcoFormatter {
 	public static String charFormat(double value) {
 		return charFormat(value, 6, 3, false);
 	}
-	
+
 	public static String charFormat(double value, int significantFigures) {
 		return charFormat(value, significantFigures, 3, false);
 	}
@@ -33,7 +33,7 @@ public class UEcoFormatter {
 
 		significantFigures = significantFigures < 1 ? 1 : significantFigures;
 		String s = String.format("%" + significantFigures + "." + (significantFigures - 1) + "e", val);
-		String[] args = s.split("e");
+		String[] args = s.split("e\\+|e");
 		if (args.length == 1)
 			return String.format("%.2f", Double.parseDouble(s));
 		int dp = 1;
@@ -59,6 +59,9 @@ public class UEcoFormatter {
 			}
 		}
 
+		while (args[0].endsWith("0") || args[0].endsWith("."))
+			args[0] = args[0].substring(0, args[0].length() - 1);
+
 		CharNotation suffix = CharNotation.getByRadix(radix);
 		if (suffix == CharNotation.NaN)
 			return args[0] + "e+" + radix;
@@ -68,6 +71,10 @@ public class UEcoFormatter {
 	public static double parse(String string) {
 		if (string.length() < 1)
 			return 0;
+
+		string = string.replace("+", "");
+		if (string.contains("e") | string.contains("E"))
+			return Double.parseDouble(string);
 
 		String suffix = string.replaceAll("[^a-zA-Z]+", "");
 		String prefix = string.replace(suffix, "");
@@ -87,8 +94,9 @@ public class UEcoFormatter {
 		@Getter private final int radix = (nextRadix++) * 3;
 
 		public static CharNotation getByRadix(int radix) {
-			int index = radix / 3;
-			if (index < 0 || index > values().length)
+			System.out.println(radix);
+			int index = (radix / 3) - 1;
+			if (index < 0 || index >= values().length)
 				return NaN;
 			return values()[index];
 		}
