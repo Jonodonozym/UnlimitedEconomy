@@ -1,52 +1,35 @@
 main: jdz.UEconomy.main.UEconomyAPI
 name: UEconomy
-version: 1.1
+version: 1.2
 author: Jonodonozym
 description: An economy plugin with a max balance of 1e308, optimized for performance!
 softdepend: [Vault]
+depend: [JBU]
 
 commands:
   about:
     description: displays information about the plugin
-    aliases: [about]
   balance:
     description: displays your current balance
     aliases: [bal]
-    usage: |
-      /bal - displays your current balance
-      /bal [player] - displays the balance of another player
-  balancetop:
+  baltop:
     description: displays the richest players on the server
-    aliases: [baltop]
-    permission: UEconomy.baltop
-    permission-message: /baltop has been disabled by the owner
-    usage: |
-      /baltop
-      /baltop [page]
+    aliases: [balancetop]
   pay:
     description: sends a specified amount to another player
     usage: /pay [player] [amount]
-    permission: UEconomy.pay
-    permission-message: /pay has been disabled by the owner
   ueco:
     descrption: Admin commands for UEconomy
     aliases: [ue, ueconomy]
-    permission: UEconomy.ueco
-    permission-message: Nice try. That's for admins only!
-    usage: |
-      /ueco set [player] [amount] - sets a player's balance to the specified amount
-      /ueco add [player] [amount] - adds money to a player's account
-      /ueco subtract [player] [amount] - remove money from a player's account
-      /ueco updatebaltop - forces the baltop scoreboard to update
     
 permissions:
-  ueconomy.ueco:
+  ueco.admin:
     description: Gives access to all admin ueco commands
     default: op
-  ueconomy.baltop:
+  ueco.baltop:
     description: Gives access to the baltop command
-    default: false
-  ueconomy.pay:
+    default: true
+  ueco.pay:
     description: Gives access to the pay command
     default: false
     

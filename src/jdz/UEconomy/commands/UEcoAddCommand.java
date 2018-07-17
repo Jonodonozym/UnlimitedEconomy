@@ -10,8 +10,10 @@ import jdz.UEconomy.data.UEcoBank;
 import jdz.bukkitUtils.commands.SubCommand;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandMethod;
+import jdz.bukkitUtils.commands.annotations.CommandShortDescription;
 
 @CommandLabel("add")
+@CommandShortDescription("adds money to a player's account")
 public class UEcoAddCommand extends SubCommand {
 
 	@CommandMethod

@@ -10,9 +10,11 @@ import jdz.UEconomy.data.UEcoBank;
 import jdz.bukkitUtils.commands.SubCommand;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandMethod;
+import jdz.bukkitUtils.commands.annotations.CommandShortDescription;
 
 @CommandLabel("subtract")
 @CommandLabel("sub")
+@CommandShortDescription("removes money from a player's account")
 public class UEcoSubCommand extends SubCommand {
 
 	@CommandMethod

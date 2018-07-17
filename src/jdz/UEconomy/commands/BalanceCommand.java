@@ -12,7 +12,7 @@ import jdz.bukkitUtils.commands.Command;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandMethod;
 
-@CommandLabel("bal")
+@CommandLabel("balance")
 public class BalanceCommand extends Command {
 
 	@CommandMethod

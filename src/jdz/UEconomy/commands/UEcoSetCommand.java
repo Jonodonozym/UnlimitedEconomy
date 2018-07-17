@@ -10,8 +10,10 @@ import jdz.UEconomy.data.UEcoBank;
 import jdz.bukkitUtils.commands.SubCommand;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandMethod;
+import jdz.bukkitUtils.commands.annotations.CommandShortDescription;
 
 @CommandLabel("set")
+@CommandShortDescription("sets a player's balance to the specified amount")
 public class UEcoSetCommand extends SubCommand {
 
 	@CommandMethod
