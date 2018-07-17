@@ -1,71 +1,59 @@
 
 package jdz.UEconomy;
 
+import jdz.bukkitUtils.misc.Pair;
 import lombok.Getter;
 
 public class UEcoFormatter {
 	public static String charFormat(double value) {
-		return charFormat(value, 6, 3, false);
+		return charFormat(value, 6);
 	}
 
-	public static String charFormat(double value, int significantFigures) {
-		return charFormat(value, significantFigures, 3, false);
+	public static String engrFormat(double val, int sf) {
+		if (val == 0)
+			return "0";
+
+		Pair<Double, Integer> valRadix = getValRadix(val);
+		if (valRadix.getValue() < 3)
+			return val + "";
+
+		return String.format("%." + sf + "G e%d", valRadix.getKey(), valRadix.getValue());
 	}
 
-	public static String charFormat(double value, int significantFigures, boolean isWholeNumber) {
-		return charFormat(value, significantFigures, 3, isWholeNumber);
-	}
-
-	/**
-	 * Helper method to format doubles using character notation instead of
-	 * scientific. Goes up to 100Dc (1E+35)
-	 * 
-	 * @param value
-	 * @param minimumRadix Any numbers with a radix (1*10^radix) above this will be
-	 *            in scientific notation
-	 * @param significant figures The number of significant figures in the number.
-	 *            Suggested is at least 4
-	 * @return A string of the number
-	 */
-	public static String charFormat(double val, int significantFigures, int minRadix, boolean isWholeNumber) {
+	public static String charFormat(double val, int sf) {
 		if (val <= 0)
 			return "0";
 
-		significantFigures = significantFigures < 1 ? 1 : significantFigures;
-		String s = String.format("%" + significantFigures + "." + (significantFigures - 1) + "e", val);
-		String[] args = s.split("e\\+|e");
-		if (args.length == 1)
-			return String.format("%.2f", Double.parseDouble(s));
-		int dp = 1;
-		int radix = Integer.parseInt(args[1]);
-		while (radix % 3 != 0) {
-			radix--;
-			dp++;
-		}
+		sf = sf < 1 ? 1 : sf;
 
-		if (radix < minRadix) {
-			if (!isWholeNumber || val % 1.0 != 0)
-				return String.format("%.2f", val);
-			return (int) val + "";
-		}
+		Pair<Double, Integer> valRadix = getValRadix(val);
+		if (valRadix.getValue() < 3)
+			return val + "";
 
-		args[0] = args[0].replace(".", "");
-		if (dp < significantFigures) {
-			args[0] = args[0].substring(0, dp) + "." + args[0].substring(dp);
-		}
-		else {
-			while (args[0].length() < dp) {
-				args[0] = args[0] + "0";
-			}
-		}
-
-		while (args[0].endsWith("0") || args[0].endsWith("."))
-			args[0] = args[0].substring(0, args[0].length() - 1);
-
-		CharNotation suffix = CharNotation.getByRadix(radix);
+		CharNotation suffix = CharNotation.getByRadix(valRadix.getValue());
 		if (suffix == CharNotation.NaN)
-			return args[0] + "e+" + radix;
-		return args[0] + suffix;
+			return String.format("%." + sf + "G e%d", valRadix.getKey(), valRadix.getValue());
+		return String.format("%." + sf + "G ", valRadix.getKey()) + suffix;
+	}
+	
+	public static String makeWhole(String s) {
+		return s.replaceFirst("\\.[0-9]+\\Z", "");
+	}
+
+	private static Pair<Double, Integer> getValRadix(double val) {
+		if (val == 0)
+			return new Pair<Double, Integer>(0D, 1);
+
+		// If the value is negative, make it positive so the log10 works
+		double posVal = Math.abs(val);
+		double log10 = Math.log10(posVal);
+
+		// Determine how many orders of 3 magnitudes the value is
+		int radix = (int) Math.floor(log10 / 3) * 3;
+
+		// Scale the value into the range 1<=val<1000
+		val /= Math.pow(10, radix);
+		return new Pair<Double, Integer>(val, radix);
 	}
 
 	public static double parse(String string) {
@@ -94,7 +82,6 @@ public class UEcoFormatter {
 		@Getter private final int radix = (nextRadix++) * 3;
 
 		public static CharNotation getByRadix(int radix) {
-			System.out.println(radix);
 			int index = (radix / 3) - 1;
 			if (index < 0 || index >= values().length)
 				return NaN;
