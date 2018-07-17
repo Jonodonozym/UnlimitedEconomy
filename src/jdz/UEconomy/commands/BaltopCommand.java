@@ -72,18 +72,18 @@ public class BaltopCommand extends Command {
 		TextComponent border = new TextComponent(GRAY + "========");
 		TextComponent previous, next;
 		if (pageIndex > 0) {
-			previous = new TextComponent(GOLD + "[<<<]");
+			previous = new TextComponent(GOLD + "[<<<<]");
 			previous.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/baltop " + (pageIndex - 1)));
 		}
 		else
-			previous = new TextComponent("=====");
+			previous = new TextComponent(GRAY+"========");
 
 		if (pageIndex < maxPages) {
-			next = new TextComponent(GOLD + "[>>>]");
+			next = new TextComponent(GOLD + " [>>>>] ");
 			next.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/baltop " + (pageIndex + 1)));
 		}
 		else
-			next = new TextComponent("=====");
+			next = new TextComponent(GRAY+"========");
 
 		return new TextComponent(border, previous, next, border);
 	}
