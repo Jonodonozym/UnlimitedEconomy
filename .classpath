@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="D:/User/git/^^Libs/Minecraft Plugins/spigot-1.12.jar"/>
 	<classpathentry kind="lib" path="D:/User/git/^^Libs/Minecraft Plugins/Vault.jar"/>
 	<classpathentry kind="lib" path="D:/User/git/^^Libs/lombok.jar"/>
+	<classpathentry kind="lib" path="D:/User/git/^^Libs/Minecraft Plugins/PlaceholderAPI-2.8.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

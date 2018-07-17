@@ -4,6 +4,10 @@ package jdz.UEconomy;
 import lombok.Getter;
 
 public class UEcoFormatter {
+	public static String charFormat(double value) {
+		return charFormat(value, 6, 3, false);
+	}
+	
 	public static String charFormat(double value, int significantFigures) {
 		return charFormat(value, significantFigures, 3, false);
 	}

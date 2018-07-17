@@ -12,6 +12,7 @@ import jdz.UEconomy.commands.PayCommand;
 import jdz.UEconomy.commands.UEcoCommandExecutor;
 import jdz.UEconomy.data.UEcoBank;
 import jdz.UEconomy.data.UEcoTop;
+import jdz.UEconomy.placeholder.UEcoPlaceholderHook;
 import jdz.UEconomy.vault.UEcoVaultHook;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
@@ -35,6 +36,9 @@ public class UEco extends JavaPlugin {
 		if (getServer().getPluginManager().getPlugin("Vault") != null)
 			Bukkit.getServer().getServicesManager().register(Economy.class, UEcoVaultHook.getInstance(), this,
 					ServicePriority.High);
+		
+		if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
+			new UEcoPlaceholderHook().hook();
 		
 		for (Player player: Bukkit.getOnlinePlayers())
 			new UEcoBank().onJoin(new PlayerJoinEvent(player, ""));
