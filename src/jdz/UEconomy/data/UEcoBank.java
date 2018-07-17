@@ -37,7 +37,7 @@ public class UEcoBank implements Listener {
 	public static void subtract(OfflinePlayer player, double amount) {
 		subtract(player.getUniqueId(), amount);
 	}
-	
+
 	public static boolean has(UUID uuid, double amount) {
 		return get(uuid) >= amount;
 	}
@@ -45,19 +45,22 @@ public class UEcoBank implements Listener {
 	public static double get(UUID uuid) {
 		if (!economy.containsKey(uuid))
 			return UEcoDatabase.getInstance().get(uuid).getBalance();
-		return economy.get(uuid).getBalance();
+		else
+			return economy.get(uuid).getBalance();
 	}
 
 	public static void set(UUID uuid, double amount) {
 		if (!economy.containsKey(uuid))
 			UEcoDatabase.getInstance().set(uuid, amount);
-		economy.get(uuid).setBalance(amount);
+		else
+			economy.get(uuid).setBalance(amount);
 	}
 
 	public static void add(UUID uuid, double amount) {
 		if (!economy.containsKey(uuid))
 			UEcoDatabase.getInstance().add(uuid, amount);
-		economy.get(uuid).setBalance(economy.get(uuid).getBalance() + amount);
+		else
+			economy.get(uuid).setBalance(economy.get(uuid).getBalance() + amount);
 	}
 
 	public static void subtract(UUID uuid, double amount) {

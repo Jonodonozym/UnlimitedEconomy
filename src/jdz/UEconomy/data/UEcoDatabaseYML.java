@@ -10,7 +10,10 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 
 import jdz.UEconomy.UEco;
@@ -43,7 +46,7 @@ class UEcoDatabaseYML implements UEcoDatabase, Listener {
 
 	@Override
 	public UEcoEntry get(UUID uuid) {
-		String name = config.getString(uuid + ".name", Bukkit.getOfflinePlayer(uuid).getName());
+		String name = getName(uuid);
 		double amount = config.getDouble(uuid + ".bal", 0);
 		return new UEcoEntry(uuid, name, amount);
 	}
@@ -52,8 +55,7 @@ class UEcoDatabaseYML implements UEcoDatabase, Listener {
 	@Override
 	public UEcoEntry get(String name) {
 		UUID uuid = UUID.fromString(config.getString(name + ".uuid", "" + Bukkit.getOfflinePlayer(name).getUniqueId()));
-		double amount = config.getDouble(name + ".bal", 0);
-		return new UEcoEntry(uuid, name, amount);
+		return get(uuid);
 	}
 
 	@Override
@@ -68,15 +70,31 @@ class UEcoDatabaseYML implements UEcoDatabase, Listener {
 	@Override
 	public void set(UUID uuid, double amount) {
 		config.set(uuid + ".bal", amount);
-		config.set(config.getString(uuid+".name"), amount);
+		config.set(getName(uuid), amount);
 	}
 
 	@Override
 	public void add(UUID uuid, double amount) {
-		double newAmount = get(uuid).getBalance()+amount;
-		
+		double newAmount = get(uuid).getBalance() + amount;
+
 		config.set(uuid + ".bal", newAmount);
-		config.set(config.getString(uuid+".name"), newAmount);
+		config.set(getName(uuid), newAmount);
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		if (!config.contains(player.getUniqueId().toString()))
+			config.set(player.getUniqueId() + ".name", player.getName());
+		else {
+			String oldName = config.getString(player.getUniqueId() + ".name");
+			if (!oldName.equals(player.getName())) {
+				config.set(oldName, null);
+				config.set(player.getName() + ".uuid", player.getUniqueId());
+				config.set(player.getName() + ".bal", get(player.getUniqueId()).getBalance());
+				config.set(player.getUniqueId() + ".name", player.getName());
+			}
+		}
 	}
 
 	@EventHandler
@@ -94,6 +112,12 @@ class UEcoDatabaseYML implements UEcoDatabase, Listener {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private String getName(UUID uuid) {
+		if (!config.contains(uuid+".name"))
+			config.set(uuid+".name", Bukkit.getOfflinePlayer(uuid).getName());
+		return config.getString(uuid+".name");
 	}
 
 }
