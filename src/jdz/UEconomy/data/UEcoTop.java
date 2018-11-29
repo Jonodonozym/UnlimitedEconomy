@@ -23,7 +23,7 @@ public class UEcoTop {
 			update();
 		return Collections.unmodifiableList(top);
 	}
-	
+
 	public static int getPosition(String name) {
 		if (!positions.containsKey(name))
 			return -1;
@@ -35,16 +35,16 @@ public class UEcoTop {
 			lastUpdate = System.currentTimeMillis();
 			top = UEcoDatabase.getInstance().getAll();
 			top.sort((a, b) -> {
-				return new Double(a.getBalance() - b.getBalance()).intValue();
+				return a.getBalance() < b.getBalance() ? -1 : 1;
 			});
-			
+
 			positions.clear();
-			int i=0;
-			for (UEcoEntry entry: top)
+			int i = 0;
+			for (UEcoEntry entry : top)
 				positions.put(entry.getName(), ++i);
-			
+
 			serverTotal = 0;
-			for (UEcoEntry entry: top) {
+			for (UEcoEntry entry : top) {
 				serverTotal += entry.getBalance();
 				if (serverTotal > entry.getBalance() * 1e12)
 					break;
