@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import jdz.UEconomy.UEco;
+import jdz.UEconomy.events.BalanceChangeEvent;
 import jdz.bukkitUtils.events.Listener;
 
 public class UEcoBank implements Listener {
@@ -50,17 +51,25 @@ public class UEcoBank implements Listener {
 	}
 
 	public static void set(UUID uuid, double amount) {
+		double oldBalance = get(uuid);
+
 		if (!economy.containsKey(uuid))
 			UEcoDatabase.getInstance().set(uuid, amount);
 		else
 			economy.get(uuid).setBalance(amount);
+
+		new BalanceChangeEvent(uuid, oldBalance, amount).call();
 	}
 
 	public static void add(UUID uuid, double amount) {
+		double oldBalance = get(uuid);
+
 		if (!economy.containsKey(uuid))
 			UEcoDatabase.getInstance().add(uuid, amount);
 		else
 			economy.get(uuid).setBalance(economy.get(uuid).getBalance() + amount);
+
+		new BalanceChangeEvent(uuid, oldBalance, amount).call();
 	}
 
 	public static void subtract(UUID uuid, double amount) {
