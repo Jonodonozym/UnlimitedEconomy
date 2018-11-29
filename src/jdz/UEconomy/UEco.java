@@ -12,6 +12,7 @@ import jdz.UEconomy.commands.PayCommand;
 import jdz.UEconomy.commands.UEcoCommandExecutor;
 import jdz.UEconomy.data.UEcoBank;
 import jdz.UEconomy.data.UEcoTop;
+import jdz.UEconomy.data.UUIDToPlayer;
 import jdz.UEconomy.placeholder.UEcoPlaceholderHook;
 import jdz.UEconomy.vault.UEcoVaultHook;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class UEco extends JavaPlugin {
 		new PayCommand().register(this);
 		
 		new UEcoBank().registerEvents(this);
+		new UUIDToPlayer().registerEvents(this);
 		
 		UEcoTop.update();
 
